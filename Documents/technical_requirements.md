@@ -8,21 +8,24 @@
   - [a. Overview](#a-overview)
   - [b. Glossary](#b-glossary)
   - [c. Context or Background](#c-context-or-background)
-  - [d. Product and Technical Requirements](#d-product-and-technical-requirements)
-  - [e. Future Goals](#e-future-goals)
-  - [f. Assumptions](#f-assumptions)
+  - [d. Client Requirements](#d-client-requirements)
+  - [e. Project Requirements](#e-project-requirements)
+  - [f. Future Goals](#f-future-goals)
+  - [g. Assumptions](#g-assumptions)
 - [3. Solutions](#3-solutions)
   - [a. Existing Solution](#a-existing-solution)
-  - [b. Features/functions to implement](#b-featuresfunctions-to-implement)
-  - [c. Release / Roll-out and Deployment Plan](#c-release--roll-out-and-deployment-plan)
-  - [d. Alternate Solutions](#d-alternate-solutions)
-- [4. Further Considerations](#4-further-considerations)
+  - [b. Release / Roll-out and Deployment Plan](#b-release--roll-out-and-deployment-plan)
+  - [c. Alternate Solutions](#c-alternate-solutions)
+- [4. Program Development](#4-program-development)
+  - [a. Type conversion](#a-type-conversion)
+  - [Tests](#tests)
+- [5. Further Considerations](#5-further-considerations)
   - [a. Contact with the client](#a-contact-with-the-client)
   - [b. Impact on the company](#b-impact-on-the-company)
-- [5. Project Management](#5-project-management)
+- [6. Project Management](#6-project-management)
   - [a. Prioritization](#a-prioritization)
   - [b. Milestones](#b-milestones)
-- [6. End Matter](#6-end-matter)
+- [7. End Matter](#7-end-matter)
   - [a. References](#a-references)
   - [b. Acknowledgement](#b-acknowledgement)
 </details>
@@ -49,7 +52,7 @@ Created on: 01/03/2023
 
 ## a. Overview
 
-Fabgen is a set of Python scripts to generate C++ binding code to different languages. It was deveeloped by **Harfang3D**.
+Fabgen is a set of Python scripts to generate C++ binding code to different languages. It was developed by **Harfang3D**.
 It was written as a SWIG replacement for the Harfang Multimedia Framework.
 
 Currently, you can generate bindings for the following languages:
@@ -75,17 +78,21 @@ Our team will work on the Rust implementation.
 
 At the moment, Fabgen can generate binding for only 3 languages. But there are so many languages used, that it would be useful to add more to the list.
 
-## d. Product and Technical Requirements
+## d. Client Requirements
 
 The Rust implementation in Fabgen need to be similar to previous languages already implemented. In particular GO which is the most similar language to Rust. The same features will be brought. Ideas for improvement will be welcome to improve the previous languages such as GO where there are still some problems with the bindings.
 
-## e. Future Goals
+## e. Project Requirements
 
-Harfang3D will be able to generate bindings for more languages.
+- The software engineer must know C++ and Rust and its feature set. A deep understanding of those features and inner workings is required to come up with a correct solution.
 
-## f. Assumptions
+## f. Future Goals
 
-Make a perect translation of the code from one language to another without the need of the rechecking/correction of the code by a human.
+Fabgen will be able to generate bindings for more languages.
+
+## g. Assumptions
+
+Make a perfect translation of the code from one language to another without the need of the rechecking/correction of the code by a human-being.
   
 # 3. Solutions
 ## a. Existing Solution
@@ -93,9 +100,19 @@ Make a perect translation of the code from one language to another without the n
 SWIG: an open source software tool, allowing to connect software or software libraries written in C/C++ with scripting languages such as: Tcl, Perl, Python, Ruby, PHP, Lua or other programming languages like Java, C#, Scheme and OCaml.
 Facebook’s TransCoder AI:  Trained AI capable to understand the code in a different language and able to convert the code from one language to another.
 
-## b. Features/functions to implement
+## b. Release / Roll-out and Deployment Plan
 
-**Generated code has no dependencies and is human readable.** <br>
+At the end of the 6 weeks, **Harfang3D** will check if the software is perfectly working. They will also look at the code to confirm everything correspond to what they wanted. If they are satisfied, they will deploy a new version of Fabgen with the new languages implemented in it. After that, the users will be able to use the new features of Fabgen in their projects.
+
+## c. Alternate Solutions 
+
+Instead of using bindings, it could be another solution to use an AI. Instead of translating the whole code, the AI would be able to understand the logic of the code and the . It could also allow to improve some parts of the code when the writing is not optimal and better things could be brought to achieve the same goal. However, this solution is more complicated to set up because it would be too long to develop and it would be too expensive.
+
+# 4. Program Development
+
+## a. Type conversion
+
+<!-- **Generated code has no dependencies and is human readable.** <br>
 **Generator input is a Python script.** <br>
 **Customizable type conversion from C++ and back.** <br>
 **Can bind many C++ construct (function/data members, static function/data members, exceptions, etc...).** <br>
@@ -106,17 +123,27 @@ Facebook’s TransCoder AI:  Trained AI capable to understand the code in a diff
 - route to route methods to a customizable expression.
 - proxy to support wrapper types such as std::shared_ptr. <br>
 **Extern type support to "link" C++ types shared by different bindings.** <br>
-**Simple and hopefully easy to dive into codebase.**
+**Simple and hopefully easy to dive into codebase.** -->
 
-## c. Release / Roll-out and Deployment Plan
+[**Type compatibility document between C++ and Rust**](type_compatibility.pdf) <br>
 
-At the end of the 6 weeks, **Harfang3D** will check if the software is perfectly working. They will also look at the code to confirm everything correspond to what they wanted. If they are satisfied, they will deploy a new version of Fabgen with the new languages implemented in it. After that, the users will be able to use the new features of Fabgen in their projects.
+**Basic type converter:** <br>
 
-## d. Alternate Solutions 
+A basic type converter must be created. It will take as parameters the type of the object, its equivalent in C++ and its equivalent in Rust. Then you will use this function to associate each type with its equivalent in C++ and Rust. <br>
 
-Instead of using bindings, it could be another solution to use an AI. Instead of translating the whole code, the AI would be able to understand the logic of the code and the . It could also allow to improve some parts of the code when the writing is not optimal and better things could be brought to achieve the same goal. However, this solution is more complicated to set up because it would be too long to develop and it would be too expensive.
+```go
+class RustBasicTypeConverter(lang.go.RustTypeConverterCommon):
+	def __init__(self, type, c_type, go_type, to_c_storage_type=None, bound_name=None, from_c_storage_type=None, needs_c_storage_class=False):
+		super().__init__(type, to_c_storage_type, bound_name, from_c_storage_type, needs_c_storage_class)
+		self.go_to_c_type = c_type
+		self.go_type = go_type
+```
 
-# 4. Further Considerations
+## Tests
+
+Tests will be run with docker by the Q&A.
+
+# 5. Further Considerations
 
 ## a. Contact with the client
 
@@ -126,9 +153,9 @@ The developers of Harfang3D are the one who created Fabgen and implemented the 3
 
 Fabgen is an important project for **Harfang3D** because it's the development of a software which is out of their principle scope of action. By improving their library, they will attract more users so more visibility and get into a new possible market. Afterwards, it will help them to get more clients and to develop their business.
 
-# 5. Project Management
+# 6. Project Management
 ## a. Prioritization
-(F0=urgent & F2=not urgent)
+(F0=urgent, F1=secondary & F2=not urgent)
 | Function                        | Flexibility         |
 | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Example| F0 |
@@ -143,9 +170,18 @@ Run test and finish documents
 - **5th week:**
 - **6th week:**
 
-# 6. End Matter
+# 7. End Matter
 
 ## a. References
 
+Harfang3D: https://www.harfang3d.com/ <br>
+Harfang3D Github: https://github.com/harfang3d <br>
+Harfang3D Github repository: https://github.com/harfang3d/harfang3d <br>
+Harfang3D ALGOSUP Github repository: https://github.com/harfang3d/algosup-binding-project <br>
 
 ## b. Acknowledgement
+
+[Harfang3D](https://www.harfang3d.com/): The client of this project. <br>
+[Emmanuel JULIEN](https://www.linkedin.com/in/ejulien/): Harfang3D Lead developer who presented us the project. <br>
+[François GUTHERZ](https://www.linkedin.com/in/astrofra/): Harfang3D CTO & Project leader who presented us the project. <br>
+[Laurent Wouters](https://www.linkedin.com/in/laurent-wouters-7439aa59/): CEO at Cénotélie/Rust trainer
