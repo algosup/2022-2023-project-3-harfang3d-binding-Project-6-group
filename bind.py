@@ -13,6 +13,7 @@ import lang.lua
 import lang.go
 import lang.cpython
 import lang.xml
+import lang.rust
 
 import lib.std
 import lib.stl
@@ -28,6 +29,7 @@ parser.add_argument('script', nargs=1)
 parser.add_argument('--lua', help='Bind to Lua 5.2+', action='store_true')
 parser.add_argument('--cpython', help='Bind to CPython', action='store_true')
 parser.add_argument('--go', help='Bind to Go', action='store_true')
+parser.add_argument('--rust', help='Bind to Rust', action='store_true')
 parser.add_argument('--xml', help='Bind to CPython', action='store_true')
 parser.add_argument('--out', help='Path to output generated files', required=True)
 parser.add_argument('--out_prefix', help='Prefix to append to output generated files name', default='')
@@ -111,6 +113,17 @@ if args.go:
 	os.system("go fmt bind.go")
 	os.system("go mod tidy")
 	os.system("goimports -w bind.go")
+
+	try:
+		os.system("clang-format -i wrapper.cpp wrapper.h")
+	except:
+		print("clang-format was not found, ideally use to have beautiful .h file")
+
+if args.rust:
+	rust_gen = lang.rust.RustGenerator()
+	output_binding(setup_generator(rust_gen))
+	os.chdir(args.out)
+	os.system("cargo fetch")
 
 	try:
 		os.system("clang-format -i wrapper.cpp wrapper.h")
