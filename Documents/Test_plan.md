@@ -88,8 +88,7 @@ Verify that the solution works for the user
 
 ### USER ACCEPTANCE TEST STRATEGY
 
-{Explain how user acceptance testing will be accomplished}
-A test will be validated if every
+A feature will be accepted if it works as expected and if it does not break any other feature.
 
 ### USER ACCEPTANCE TEST CASES
 
