@@ -17,7 +17,6 @@
 - [User acceptance test section (To be completed by the business office)](#user-acceptance-test-section-to-be-completed-by-the-business-office)
   - [User acceptance test strategy](#user-acceptance-test-strategy)
   - [User acceptance test cases](#user-acceptance-test-cases)
-- [Appendix](#appendix)
 
 ## Identification information section
 
@@ -95,5 +94,3 @@ A feature will be accepted if it works as expected and if it does not break any 
 | \#  | TEST ITEM | EXPECTED RESULTS | ACTUAL RESULTS | DATE |
 | --- | --------- | ---------------- | -------------- | ---- |
 | 1   |           |                  |                |      |
-
-## Appendix
