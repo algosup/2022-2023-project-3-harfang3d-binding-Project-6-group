@@ -64,7 +64,7 @@ Evaluate all reports introduced in previous releases
 
 ### REGRESSION TEST CASES
 
-| #   | OBJECTIVE | INPUT | EXPECTED RESULTS | OBSERVED |
+| \#  | OBJECTIVE | INPUT | EXPECTED RESULTS | OBSERVED |
 | --- | --------- | ----- | ---------------- | -------- |
 | 1   |           |       |                  |          |
 
@@ -78,7 +78,7 @@ Evaluate all integrations with locally developed shared libraries, with consumed
 
 ### INTEGRATION TEST CASES
 
-| #   | OBJECTIVE | INPUT | EXPECTED RESULTS | TEST DELIVERABLES |
+| \#  | OBJECTIVE | INPUT | EXPECTED RESULTS | TEST DELIVERABLES |
 | --- | --------- | ----- | ---------------- | ----------------- |
 | 1   |           |       |                  |                   |
 
@@ -93,7 +93,7 @@ A test will be validated if every
 
 ### USER ACCEPTANCE TEST CASES
 
-| #   | TEST ITEM | EXPECTED RESULTS | ACTUAL RESULTS | DATE |
+| \#  | TEST ITEM | EXPECTED RESULTS | ACTUAL RESULTS | DATE |
 | --- | --------- | ---------------- | -------------- | ---- |
 | 1   |           |                  |                |      |
 
