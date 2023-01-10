@@ -98,7 +98,7 @@ func Test(t *testing.T) {
 '''
 
 test_rust = '''\
-use my_test;
+extern crate my_test;
 
 #[test]
     fn test_basic_type_exchange() {

@@ -544,11 +544,13 @@ class RustTestBed:
 
 		success = True
 		try:
-			subprocess.check_output("cargo new my_test", shell=True, stderr=subprocess.STDOUT)
+			subprocess.check_output("cargo new test_rust", shell=True, stderr=subprocess.STDOUT)
+			
 
-			os.system("cp test.rs my_test/src/main.rs")
-			os.chdir('my_test')
+			os.system("cp test.rs test_rust/src/main.rs")
+			os.chdir('test_rust')
 
+			subprocess.check_output("cargo add my_test", shell=True, stderr=subprocess.STDOUT)
 			subprocess.check_output('cargo test', shell=True, stderr=subprocess.STDOUT)
 		except subprocess.CalledProcessError as e:
 			print(e.output.decode('utf-8'))
