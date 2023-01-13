@@ -16,9 +16,9 @@ Author: Lucien LAVATINE
 This is the list of the principals points of contact for this project :
 Entity | Rank | Name | Mail 
 ----------|------------- | ------------- | --------
-ALGOSUP | Project Manager |  Guillaume Rivière | guillaume.riviere@alGOsup.com
-ALGOSUP | Technical Leader |  Quentin Clément | quentin.clement@alGOsup.com
-ALGOSUP | Program Manager | Lucien Lavatine | lucien.lavatine@alGOsup.com
+ALGOSUP | Project Manager |  Guillaume Rivière | guillaume.riviere@algosup.com
+ALGOSUP | Technical Leader |  Quentin Clément | quentin.clement@algosup.com
+ALGOSUP | Program Manager | Lucien Lavatine | lucien.lavatine@algosup.com
 HARFANG 3D | Client | Emmanuel Julien   | emmanuel.julien@harfang3d.com
 HARFANG 3D | Client | François Gutherz | francois.gutherz@harfang3d.com
 
