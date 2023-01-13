@@ -25,11 +25,6 @@ RUN apt-get install -y cmake
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
 
-# install git
-RUN apt-get install -y git
-# https://github.com/algosup/2022-2023-project-3-harfang3d-binding-Project-8-group.git
-#RUN git clone https://github.com/algosup/2022-2023-project-3-harfang3d-binding-Project-6-group.git
-
 COPY . ./app/
 WORKDIR /app
 
