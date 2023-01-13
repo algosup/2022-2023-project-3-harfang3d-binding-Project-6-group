@@ -19,6 +19,7 @@
 - [4. Program Development](#4-program-development)
 	- [a. Type compatibility](#a-type-compatibility)
 	- [b. Type converter](#b-type-converter)
+	- [b.](#b)
 	- [Tests](#tests)
 - [5. Further Considerations](#5-further-considerations)
 	- [a. Contact with the client](#a-contact-with-the-client)
@@ -66,13 +67,20 @@ They now want to implement 2 new languages, Rust and F#.
 Our team will work on the Rust implementation.
 
 ## b. Glossary
+
 | Terms                        | Definition             |
 | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Binding| Data binding, the technique of connecting two data elements together|
+| Binding| Data binding, the technique of connecting two data elements together.|
 | SWIG| SWIG is a software development tool that connects programs written in C and C++ with a variety of high-level programming languages.|
 | Software| The term software is used to describe software that enables your computer to operate and handles data processing. Several software are installed on your device to give commands, so that specific tasks are performed according to their uses.|
 | C, C++, Python, Lua, GO, Rust, F#| Programming languages|
 | AI| The theory and development of computer systems able to perform tasks normally requiring human intelligence, such as visual perception, speech recognition, decision-making, and translation between languages.|
+| Type| A type is a classification identifying one of various types of data, such as char, integer, or Boolean, that determines the possible values for that type and the set of operations that can be performed on values of that type.|
+| Char| a data type that holds one character (letter, number, etc.) of data.|
+| Int| a datum of integral data type, a data type that represents some range of mathematical integers.|
+| Float| a float is a data type composed of a number that is not an integer, because it includes a fraction represented in decimal format.|
+| Bool| a data type that has one of two possible values (usually denoted true and false) which is intended to represent the two truth values of logic and Boolean algebra.|
+| String| a string is traditionally a sequence of characters, either as a literal constant or as some kind of variable.|
 
 
 ## c. Context or Background
@@ -115,19 +123,6 @@ add an argument to the generator
 
 ## a. Type compatibility
 
-<!-- **Generated code has no dependencies and is human readable.** <br>
-**Generator input is a Python script.** <br>
-**Customizable type conversion from C++ and back.** <br>
-**Can bind many C++ construct (function/data members, static function/data members, exceptions, etc...).** <br>
-**User specifiable bound name.** <br>
-**Types can be hidden from the generated binding interface.** <br>
-**Feature mechanism to extend types and prototypes such as:** <br>
-- arg_out, arg_in_out to support output arguments.
-- route to route methods to a customizable expression.
-- proxy to support wrapper types such as std::shared_ptr. <br>
-**Extern type support to "link" C++ types shared by different bindings.** <br>
-**Simple and hopefully easy to dive into codebase.** -->
-
 **Integers:** <br>
 
 <img title="a title" alt="Alt text" src="integers.png" width="800">
@@ -145,6 +140,22 @@ The boolean type is the same in Rust and in C++. <br>
 The string type exists in Rust but not in C++ so we will use tables of chars instead. <br>
 
 ## b. Type converter
+
+Each type converter (except the vector converter) class need to contain these 4 methods. This is the model of the methods but they must be adapted in each case (the content, the order, add other methods, etc...).
+
+```py
+def get_type_glue(self, gen, module_name):
+	return ""
+
+def get_type_api(self, module_name):
+	return ""
+
+def to_c_call(self, in_var, out_var_p, is_pointer):
+	return ""
+
+def from_c_call(self, out_var, expr, ownership):
+	return ""
+```
 
 **Rust type converter:** <br>
 
@@ -172,6 +183,8 @@ class RustBoolConverter(lang.rust.RustTypeConverterCommon):
 
 **Character converter** <br>
 
+The char type is similar in Rust and C++ so the conversion doesn't need to be complicated.
+
 ```py
 class RustConstCharPtrConverter(lang.rust.RustTypeConverterCommon):
 		def __init__(self, type, to_c_storage_type=None, bound_name=None, from_c_storage_type=None, needs_c_storage_class=False):
@@ -187,13 +200,16 @@ class RustConstCharPtrConverter(lang.rust.RustTypeConverterCommon):
 				out = f"{out_var_p.replace('&', '_')}, idFin{out_var_p.replace('&', '_')} := wrapString({in_var})\n"
 				out += f"defer idFin{out_var_p.replace('&', '_')}()\n"
 			return out
+
+		def from_c_call(self, out_var, expr, ownership):
+			return "C.GoString(%s)" % (out_var)
 ```
 
 Then you will bind the 2 types by initializing type with "const char *".
 
 **Basic type converter:** <br>
 
-A basic type converter must be created. It will take as parameters the type of the object, its equivalent in C++ and its equivalent in Rust. Then you will use this function to associate each type with its equivalent in C++ and Rust. <br>
+A basic type converter must be created. It will take as parameters the type of the object (when it's an int or a float), its equivalent in C++ and its equivalent in Rust. Then you will use this function to associate each type with its equivalent in C++ and Rust. <br>
 
 ```py
 class RustBasicTypeConverter(lang.rust.RustTypeConverterCommon):
@@ -213,16 +229,9 @@ class RustStringConverter(lang.rust.RustTypeConverterCommon):
 			super().__init__(type, to_c_storage_type, bound_name, from_c_storage_type, needs_c_storage_class)
 			self.rust_to_c_type = "*C.char"
 			self.rust_type = "string"
-
-		def to_c_call(self, in_var, out_var_p, is_pointer=False):
-			if is_pointer:
-				out = f"{out_var_p.replace('&', '_')}1 := C.CString(*{in_var})\n"
-				out += f"{out_var_p.replace('&', '_')} := &{out_var_p.replace('&', '_')}1\n"
-			else:
-				out = f"{out_var_p.replace('&', '_')}, idFin{out_var_p.replace('&', '_')} := wrapString({in_var})\n"
-				out += f"defer idFin{out_var_p.replace('&', '_')}()\n"
-			return out
 ```
+
+The to_c_call and from_c_call methods are exactly the same as for the char converter.
 
 **Vector converter**
 
@@ -234,6 +243,15 @@ class RustVectorToStdVectorConverter(lang.rust.RustTypeConverterCommon):
 		native_type = f"std::vector<{T_conv.ctype}>"
 		super().__init__(type, native_type, None, native_type)
 		self.T_conv = T_conv
+```
+## b.
+
+```py
+def clean_name(name):
+	new_name = str(name).strip().replace("_", "").replace(":", "")
+	if new_name in ["all reserved rust keywords"]:
+		return new_name + "Rust"
+	return new_name
 ```
 
 ## Tests
