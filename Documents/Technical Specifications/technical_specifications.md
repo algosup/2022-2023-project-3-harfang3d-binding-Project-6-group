@@ -19,7 +19,9 @@
 - [4. Program Development](#4-program-development)
 	- [a. Type compatibility](#a-type-compatibility)
 	- [b. Type converter](#b-type-converter)
-	- [b.](#b)
+	- [b. Function implementation](#b-function-implementation)
+	- [c.](#c)
+	- [d. Rust generator class](#d-rust-generator-class)
 	- [Tests](#tests)
 - [5. Further Considerations](#5-further-considerations)
 	- [a. Contact with the client](#a-contact-with-the-client)
@@ -202,7 +204,7 @@ class RustConstCharPtrConverter(lang.rust.RustTypeConverterCommon):
 			return out
 
 		def from_c_call(self, out_var, expr, ownership):
-			return "C.GoString(%s)" % (out_var)
+			return "C.RustString(%s)" % (out_var)
 ```
 
 Then you will bind the 2 types by initializing type with "const char *".
@@ -244,15 +246,72 @@ class RustVectorToStdVectorConverter(lang.rust.RustTypeConverterCommon):
 		super().__init__(type, native_type, None, native_type)
 		self.T_conv = T_conv
 ```
-## b.
+
+## b. Function implementation
+
+**Route lambda**
+
+This function declares a function in C from . <br>
+We can keep the existing function in rust.py.
+
+**Clean name**
+
+This function is used to clean the name of the function. Indeed, some names are reserved in Rust so we need to add "Rust" at the end of the name to make it usable. <br>
+
+Reserved keywords in Rust: as, break, const, continue, crate, else, enum, extern, false, fn, for, if, impl, in, let, loop, match, mod, move, mut, pub, ref,return,self, Self, static, struct, super, trait, true, type, unsafe, use, where, while, async, await, dyn. <br>
+
+We can keep the existing function in go.py but we need to change the Go reserved list by the ones above and replace "Go" by "Rust" at the end of "new_name".
+
+**Clean name with title**
+
+This function is used to transform the name of the function in Pascal case. <br>
+We can keep the existing function in rust.py.
+
+## c. 
 
 ```py
-def clean_name(name):
-	new_name = str(name).strip().replace("_", "").replace(":", "")
-	if new_name in ["all reserved rust keywords"]:
-		return new_name + "Rust"
-	return new_name
+class RustClassTypeDefaultConverter(RustTypeConverterCommon):
 ```
+
+```py
+class RustExternTypeConverter(RustTypeConverterCommon):
+```
+
+## d. Rust generator class
+
+List of functions to implement in this class:
+- __ init __(self, type, to_c_storage_type=None, bound_name=None, from_c_storage_type=None, needs_c_storage_class=False):
+		super().__init__(type, to_c_storage_type, bound_name, from_c_storage_type, needs_c_storage_class)
+- get_language(self)
+- output_includes(self)
+- start(self, module_name)
+- set_compilation_directives(self, directives)
+- get_binding_api_declaration(self)
+- output_binding_api(self)
+- get_output(self)
+- _get_type(self, name)
+- _get_conv(self, conv_name)
+- _get_conv_from_bound_name(self, bound_name)
+- __get_is_type_class_or_pointer_with_class(self, conv)
+- __get_stars(self, val, start_stars=0, add_start_for_ref=True)
+- __arg_from_cpp_to_c(self, val, retval_name, just_copy)
+- __arg_from_c_to_cpp(self, val, retval_name, add_star=True)
+- __arg_from_c_to_rust(self, val, retval_name, non_owning=False)
+- __arg_from_rust_to_c(self, val, arg_name)
+- __get_arg_bound_name_to_rust(self, val)
+- __get_arg_bound_name_to_c(self, val)
+- __extract_sequence_rust(self, conv)
+- __extract_sequence(self, conv, is_in_header=False)
+- __extract_get_set_member_rust(self, classname, member, static=False, name=None, bound_name=None, is_global=False, implicit_cast=None)
+- create_get_set(do_static)
+- __extract_get_set_member(self, classname, convClass, member, static=False, name=None, bound_name=None, is_global=False, is_in_header=False)
+- __extract_method_rust(self, classname, convClass, method, static=False, name=None, bound_name=None, is_global=False, is_constructor=False)
+- __extract_method(self, classname, convClass, method, static=False, name=None, bound_name=None, is_global=False, is_in_header=False, is_constructor=False, overload_op=None)
+- _check_arg_out_add_constructor_if_needed(self, method)
+- finalize(self)
+- bind_method_translate(classname, convClass, method, static=False, name=None, bound_name=None, is_global=False, is_constructor=False)
+
+They are already implemented in the go.py file but it is better to start from scratch than to modify the existing code.
 
 ## Tests
 
@@ -276,9 +335,11 @@ https://github.com/orgs/algosup/projects/6
 ## b. Milestones
 
 - **1st week:**
-Run test and finish documents
+Run existing test and finish documents
 - **2nd week:**
+Work faster
 - **3rd week:**
+Finish tech spec, finish comments
 - **4rd week:**
 - **5th week:**
 - **6th week:**
