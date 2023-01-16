@@ -51,7 +51,8 @@ Large user community and software base
 Name : Slavko Dujmović
 Age : 25
 Job : Junior Software Engineer
-Description : Slavko, is a beginner and only knows Rust for the moment, and to have more opportunity to work he would like to use fabgen to convert his codes from Rust to Python.
+Description : Slavko, is a beginner and only knows Rust for the moment, and to have more opportunity
+to work he would like to use fabgen to convert his codes from Rust to C++.
 ```
 ```
 Name : John Marston
