@@ -48,6 +48,12 @@ Large user community and software base
 #### Personas
 
 ```
+Name : Slavko Dujmović
+Age : 25
+Job : Junior Software Engineer
+Description : Slavko, is a beginner and only knows Rust for the moment, and to have more opportunity to work he would like to use fabgen to convert his codes from Rust to Python.
+```
+```
 Name : John Marston
 Age : 37
 Job : Software Engineer
