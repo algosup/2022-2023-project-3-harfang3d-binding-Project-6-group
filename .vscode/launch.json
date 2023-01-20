@@ -137,6 +137,17 @@
 			]
 		},
 		{
+			"name": "Rust: Test --debug",
+			"type": "python",
+			"request": "launch",
+			"stopOnEntry": false,
+			"python": "${command:python.interpreterPath}",
+			"program": "${workspaceRoot}/bind.py",
+			"cwd": "${workspaceRoot}",
+			"args": ["--out", "./output/bind_dev", "--rust", "test_bind.py"],
+			"envFile": "${workspaceRoot}/.env",
+		},
+		{
 			"name": "Lua53: Tests",
 			"type": "python",
 			"request": "launch",

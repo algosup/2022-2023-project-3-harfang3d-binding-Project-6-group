@@ -123,6 +123,7 @@ if args.rust:
 	rust_gen = lang.rust.RustGenerator()
 	output_binding(setup_generator(rust_gen))
 	os.chdir(args.out)
+
 	os.system("cargo fetch")
 
 	try:
@@ -134,11 +135,11 @@ if args.xml:
 	output_binding(setup_generator(lang.xml.XMLGenerator()))
 
 
-# output Fabgen API
-if not args.no_fabgen_api:
-	path = os.path.join(args.out, 'fabgen.h')
-	with open(path, mode='w', encoding='utf-8') as f:
-		f.write(gen.get_fabgen_api())
-	print('FABgen API written to %s' % path)
-else:
-	print('FABgen API not written')
+# # output Fabgen API
+# if not args.no_fabgen_api:
+# 	path = os.path.join(args.out, 'wrapper.h')
+# 	with open(path, mode='w', encoding='utf-8') as f:
+# 		f.write(gen.get_fabgen_api())
+# 	print('FABgen API written to %s' % path)
+# else:
+# 	print('FABgen API not written')
