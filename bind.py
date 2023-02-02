@@ -5,7 +5,6 @@ import os
 import sys
 import importlib
 import time
-import subprocess
 
 import argparse
 
@@ -136,12 +135,11 @@ if args.xml:
 	output_binding(setup_generator(lang.xml.XMLGenerator()))
 
 
-# output Fabgen API
-if not args.no_fabgen_api:
-	path = os.path.join(args.out, 'wrapper.h')
-	subprocess.call(['pwd'])
-	with open('wrapper.h', mode='w', encoding='utf-8') as f:
-		f.write(gen.get_fabgen_api())
-	print('FABgen API written to %s' % path)
-else:
-	print('FABgen API not written')
+# # output Fabgen API
+# if not args.no_fabgen_api:
+# 	path = os.path.join(args.out, 'wrapper.h')
+# 	with open(path, mode='w', encoding='utf-8') as f:
+# 		f.write(gen.get_fabgen_api())
+# 	print('FABgen API written to %s' % path)
+# else:
+# 	print('FABgen API not written')
