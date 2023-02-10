@@ -20,6 +20,8 @@ RUN pip3 install pypeg2
 RUN apt-get install -y lua5.2
 # install cmake
 RUN apt-get install -y cmake
+# install libclang
+RUN apt-get install -y libclang-dev
 
 # Get Rust
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y

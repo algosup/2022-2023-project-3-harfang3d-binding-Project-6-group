@@ -15,7 +15,7 @@ where P: AsRef<Path>, {
 
 fn extract_what_we_want()-> String{
     let mut result = "".to_owned();
-    if let Ok(lines) = read_lines("./cpp/fabgen.cpp") {
+    if let Ok(lines) = read_lines("./cpp/wrapper.cpp") {
         // Consumes the iterator, returns an (Optional) String
         let mut flag = false;
         for line in lines {
@@ -66,12 +66,12 @@ fn get_rid_of_mustach(mut text: String) -> String{
 fn main() {
 
     let text = get_rid_of_mustach(extract_what_we_want());
-    let mut file = OpenOptions::new().append(true).open("./cpp/fabgen.h").expect("cannot open file");
+    let mut file = OpenOptions::new().append(true).open("./cpp/wrapper.h").expect("cannot open file");
     file.write_all(text.as_bytes()).expect("write failed");
     println!("file append success");
 
     println!("cargo:rerun-if-changed=wrapper.h");
-    let src = ["cpp/liba.cpp"];
+    let src = ["cpp/wrapper.cpp"];
 
     cc::Build::new()
         .cpp(true)
@@ -79,7 +79,7 @@ fn main() {
         .compile("mybar");
 
     let bindings = bindgen::Builder::default()
-        .header("wrapper.h")
+        .header("cpp/wrapper.h")
         .layout_tests(false)
         .clang_arg("-xc++").clang_arg("-std=c++11").clang_arg("-Wc++11-extensions")
         //.clang_arg("-Ivendor/cpp")

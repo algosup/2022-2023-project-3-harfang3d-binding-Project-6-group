@@ -430,7 +430,11 @@ class GoTestBed:
 		if not build_and_deploy_go_extension(work_path, build_path):
 			return False
 
+
+		print(work_path)
+		input("=====")
 		# after build, delete the wrapper.cpp to test the lib which has been build
+		
 		if os.path.exists(os.path.join(work_path, 'wrapper.cpp')):
 			os.remove(os.path.join(work_path, 'wrapper.cpp'))
 
@@ -513,6 +517,10 @@ class RustTestBed:
 			print("Can't find test_rust")
 			return False
 
+		build_path = os.path.join(work_path, 'build.rs')
+		with open(build_path, 'w') as file:
+			file.write(module.build_rust)
+
 		# copy test file
 		test_path = os.path.join(work_path, 'test.rs')
 		with open(test_path, 'w') as file:
@@ -523,7 +531,7 @@ class RustTestBed:
 			test_path = os.path.join(work_path, 'test_crust.rs')
 			with open(test_path, 'w') as file:
 				file.write(module.test_special_crust)
-
+		
 		build_path = os.path.join(work_path, 'build')
 		os.mkdir(build_path)
 		os.chdir(build_path)
@@ -534,23 +542,36 @@ class RustTestBed:
 		if not build_and_deploy_rust_extension(work_path, build_path):
 			return False
 
-		# after build, delete the wrapper.cpp to test the lib which has been build
-		if os.path.exists(os.path.join(work_path, 'wrapper.cpp')):
-			os.remove(os.path.join(work_path, 'wrapper.cpp'))
-
 		print("Executing Rust test...")
 		os.chdir(work_path)
-
 
 		success = True
 		try:
 			subprocess.check_output("cargo new test_rust", shell=True, stderr=subprocess.STDOUT)
-			
+			os.mkdir('test_rust/tests')
+			os.system("cp test.rs test_rust/tests/test.rs")
+			os.system("cp build.rs test_rust/build.rs")
+			os.mkdir('test_rust/cpp')
+			os.system("cp fabgen.h test_rust/cpp/fabgen.h")
+			os.system("cp wrapper.cpp test_rust/cpp/fabgen.cpp")
 
-			os.system("cp test.rs test_rust/src/main.rs")
+
+			# Delete line 2 in fabgen.cpp because of errors
+			filename = "test_rust/cpp/fabgen.cpp"
+			with open(filename, "r") as file:
+				lines = file.readlines()
+			with open(filename, "w") as file:
+				lines = lines[:1] + lines[2:]
+				file.writelines(lines)
+
+
 			os.chdir('test_rust')
 
-			subprocess.check_output("cargo add my_test", shell=True, stderr=subprocess.STDOUT)
+			subprocess.check_output("cargo add bindgen --build", shell=True, stderr=subprocess.STDOUT)
+			subprocess.check_output("cargo add cc --build", shell=True, stderr=subprocess.STDOUT)
+
+
+			subprocess.check_output("cargo build", shell=True, stderr=subprocess.STDOUT)
 			subprocess.check_output('cargo test', shell=True, stderr=subprocess.STDOUT)
 		except subprocess.CalledProcessError as e:
 			print(e.output.decode('utf-8'))
@@ -563,7 +584,7 @@ class RustTestBed:
 # Clang format
 def create_clang_format_file(work_path):
 	with open(os.path.join(work_path, '_clang-format'), 'w') as file:
-		file.write('''ColumnLimit: 0
+		file.write("""ColumnLimit: 0
 UseTab: Always
 TabWidth: 4
 IndentWidth: 4
@@ -571,7 +592,7 @@ IndentCaseLabels: true
 AccessModifierOffset: -4
 AlignAfterOpenBracket: DontAlign
 AlwaysBreakTemplateDeclarations: false
-AlignTrailingComments: false''')
+AlignTrailingComments: false""")
 
 
 #
