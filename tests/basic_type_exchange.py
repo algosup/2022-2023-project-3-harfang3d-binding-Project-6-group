@@ -101,17 +101,22 @@ test_rust = '''\
 extern crate my_test;
 
 #[test]
-    fn test_basic_type_exchange() {
-		assert!(my_test::return_int() == 8);
-		assert!(my_test::return_float() == 8);
-		assert!(my_test::return_const_char_ptr() == "const char * -> string");
+	unsafe {
+        let value = return_const_char_ptr();
+        let string = CStr::from_ptr(value).to_str().unwrap();
 
-		assert!(my_test::return_int_by_pointer() == 9);
-		assert!(my_test::return_int_by_reference() == 9);
+        let mut x: i32 = 3;
+        let mut y: i32 = 4;
+        
+		assert!(return_int() == 8);
+		assert!(return_float() == 8.0);
+		assert!(string == "const char * -> string");
+		assert!(*return_int_by_pointer() == 9);
+		assert!(*return_int_by_reference() == 9);
+		assert!(add_int_by_value(3, 4) == 7);
+		assert!(add_int_by_pointer(&mut x, &mut y) == 7);
+		assert!(add_int_by_reference(&mut x, &mut y) == 7);
 
-		assert!(my_test::add_int_by_value(3, 4) == 7);
-		assert!(my_test::add_int_by_pointer(3, 4) == 7);
-		assert!(my_test::add_int_by_reference(3, 4) == 7);
     }
 
 '''
