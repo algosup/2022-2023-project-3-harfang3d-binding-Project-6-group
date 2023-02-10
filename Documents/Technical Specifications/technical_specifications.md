@@ -17,12 +17,14 @@
 	- [b. Release / Roll-out and Deployment Plan](#b-release--roll-out-and-deployment-plan)
 	- [c. Alternate Solutions](#c-alternate-solutions)
 - [4. Program Development](#4-program-development)
-	- [a. Type compatibility](#a-type-compatibility)
-	- [b. Type converter](#b-type-converter)
-	- [b. Function implementation](#b-function-implementation)
-	- [c.](#c)
-	- [d. Rust generator class](#d-rust-generator-class)
-	- [Tests](#tests)
+	- [a. Fabgen bindings](#a-fabgen-bindings)
+		- [a.1. Type compatibility](#a1-type-compatibility)
+		- [a.2. Type converter](#a2-type-converter)
+		- [a.3. Function implementation](#a3-function-implementation)
+		- [a.4.](#a4)
+		- [a.5. Rust generator class](#a5-rust-generator-class)
+	- [b. Recovery solution](#b-recovery-solution)
+	- [c. Tests](#c-tests)
 - [5. Further Considerations](#5-further-considerations)
 	- [a. Contact with the client](#a-contact-with-the-client)
 	- [b. Impact on the company](#b-impact-on-the-company)
@@ -74,6 +76,7 @@ Our team will work on the Rust implementation.
 | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Binding| Data binding, the technique of connecting two data elements together.|
 | SWIG| SWIG is a software development tool that connects programs written in C and C++ with a variety of high-level programming languages.|
+| Bindgen| Bindgen is a tool for generating Rust FFI bindings to C (and some C++) libraries.|
 | Software| The term software is used to describe software that enables your computer to operate and handles data processing. Several software are installed on your device to give commands, so that specific tasks are performed according to their uses.|
 | C, C++, Python, Lua, GO, Rust, F#| Programming languages|
 | AI| The theory and development of computer systems able to perform tasks normally requiring human intelligence, such as visual perception, speech recognition, decision-making, and translation between languages.|
@@ -96,10 +99,12 @@ The Rust implementation in Fabgen need to be similar to previous languages alrea
 ## e. Project Requirements
 
 - The software engineer must know C++ and Rust and its feature set. A deep understanding of those features and inner workings is required to come up with a correct solution.
+- The software engineer must be able to read and understand the code of Fabgen.
+- Regular contact with the client is required to ensure the project is going in the right direction.
 
 ## f. Future Goals
 
-Fabgen will be able to generate bindings for more languages.
+Fabgen will be able to generate bindings for more languages and improve the existing ones.
 
 ## g. Assumptions
 
@@ -121,9 +126,11 @@ Instead of using bindings, it could be another solution to use an AI. Instead of
 
 # 4. Program Development
 
-add an argument to the generator
+## a. Fabgen bindings
 
-## a. Type compatibility
+We need to generate bindings for Fabgen's C++ library to Rust, so when the user will use the Rust bindings, fabgen will find an equivalent in C++. <br>
+
+### a.1. Type compatibility
 
 **Integers:** <br>
 
@@ -141,7 +148,7 @@ The boolean type is the same in Rust and in C++. <br>
 
 The string type exists in Rust but not in C++ so we will use tables of chars instead. <br>
 
-## b. Type converter
+### a.2. Type converter
 
 Each type converter (except the vector converter) class need to contain these 4 methods. This is the model of the methods but they must be adapted in each case (the content, the order, add other methods, etc...).
 
@@ -247,7 +254,7 @@ class RustVectorToStdVectorConverter(lang.rust.RustTypeConverterCommon):
 		self.T_conv = T_conv
 ```
 
-## b. Function implementation
+### a.3. Function implementation
 
 **Route lambda**
 
@@ -267,7 +274,7 @@ We can keep the existing function in go.py but we need to change the Go reserved
 This function is used to transform the name of the function in Pascal case. <br>
 We can keep the existing function in rust.py.
 
-## c. 
+### a.4. 
 
 ```py
 class RustClassTypeDefaultConverter(RustTypeConverterCommon):
@@ -277,7 +284,7 @@ class RustClassTypeDefaultConverter(RustTypeConverterCommon):
 class RustExternTypeConverter(RustTypeConverterCommon):
 ```
 
-## d. Rust generator class
+### a.5. Rust generator class
 
 List of functions to implement in this class:
 - __ init __(self, type, to_c_storage_type=None, bound_name=None, from_c_storage_type=None, needs_c_storage_class=False):
@@ -313,7 +320,11 @@ List of functions to implement in this class:
 
 They are already implemented in the go.py file but it is better to start from scratch than to modify the existing code.
 
-## Tests
+## b. Recovery solution
+
+If we are struggling to implement the Rust generator in Fabgen, we will use Bindgen to create bindings. First, we will use a simple C++ library to test the tool. Then, we will use it to generate bindings for the Fabgen library and implement them in Fabgen.
+
+## c. Tests
 
 Tests will be run with docker by the Q&A.
 
@@ -328,6 +339,7 @@ The developers of Harfang3D are the one who created Fabgen and implemented the f
 Fabgen is an important project for **Harfang3D** because it's the development of a software which is out of their principal scope of action. By improving their library, they will attract more users so more visibility and get into a new possible market. Afterwards, it will help them to get more clients and to develop their business.
 
 # 6. Project Management
+
 ## a. Prioritization
 
 https://github.com/orgs/algosup/projects/6
@@ -335,19 +347,26 @@ https://github.com/orgs/algosup/projects/6
 ## b. Milestones
 
 - **1st week:**
-Run existing test and finish documents
+Analyse of the project, start the documentation, start to understand the existing code
 - **2nd week:**
-Work faster
+Finish the functionnal specifications, continue to understand the existing code
 - **3rd week:**
-Finish tech spec, finish comments
+Finish technical specifications, start to implement the code
 - **4rd week:**
+Try to bind with bindgen and a small library, and start the tests
 - **5th week:**
+Continue binding with bindgen and a small library, and continue the tests
 - **6th week:**
+Bind with bindgen but on the Fabgen library, and finish the tests
+- **7th week:**
+Finish the last details and work on the oral presentation
 
 # 7. End Matter
 
 ## a. References
 
+Project Github repository: https://github.com/algosup/2022-2023-project-3-harfang3d-binding-Project-6-group <br>
+Test Project Github repository: https://github.com/Guillaume-Riviere/bindgen_tests <br>
 Harfang3D: https://www.harfang3d.com/ <br>
 Harfang3D Github: https://github.com/harfang3d <br>
 Harfang3D Github repository: https://github.com/harfang3d/harfang3d <br>
