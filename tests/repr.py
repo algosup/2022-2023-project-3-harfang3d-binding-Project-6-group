@@ -39,3 +39,12 @@ test_go = '''\
 package mytest
 
 '''
+
+test_rust = '''\
+
+'''
+
+build_rust = '''\
+	fn main() {
+	}
+'''
