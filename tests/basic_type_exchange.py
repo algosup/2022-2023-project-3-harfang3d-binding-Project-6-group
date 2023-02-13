@@ -191,6 +191,20 @@ fn get_rid_of_mustach(mut text: String) -> String{
         }
         i += 1;
     }
+	i = 0;
+    while i < text.len() {
+        if text.chars().nth(i).unwrap() == '='{
+            flag = true;
+        }
+        if text.chars().nth(i).unwrap() == ')' || text.chars().nth(i).unwrap() == ','{
+            flag = false;
+        }
+        if flag{
+            text.replace_range(i..i+1, "");
+            i-=1;
+        }
+        i += 1;
+    }
     text
 }
 
