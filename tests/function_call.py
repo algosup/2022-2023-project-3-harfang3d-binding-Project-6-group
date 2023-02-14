@@ -152,6 +152,9 @@ test_rust = '''\
 		}
 	}
 '''
+
+# Required for the lib to Build
+# TODO: Make this global to all tests
 build_rust = '''\
 use std::env;
 use std::path::PathBuf;

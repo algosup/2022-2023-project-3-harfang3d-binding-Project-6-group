@@ -517,6 +517,9 @@ class RustTestBed:
 			print("Can't find test_rust")
 			return False
 
+
+		# create and fill the build.rs file
+		# using the data provided in each tests ( build_rust variable )
 		build_path = os.path.join(work_path, 'build.rs')
 		with open(build_path, 'w') as file:
 			file.write(module.build_rust)
@@ -547,6 +550,7 @@ class RustTestBed:
 
 		success = True
 		try:
+			# Rebuild a test_rust folder to compile the lib
 			subprocess.check_output("cargo new test_rust", shell=True, stderr=subprocess.STDOUT)
 			os.mkdir('test_rust/tests')
 			os.system("cp test.rs test_rust/tests/test.rs")
@@ -557,6 +561,7 @@ class RustTestBed:
 
 
 			# Delete line 2 in fabgen.cpp because of errors
+			# Recursive call to '#include "wrapper.h"'
 			filename = "test_rust/cpp/fabgen.cpp"
 			with open(filename, "r") as file:
 				lines = file.readlines()
@@ -567,10 +572,11 @@ class RustTestBed:
 
 			os.chdir('test_rust')
 
+			# Add build dependencies
 			subprocess.check_output("cargo add bindgen --build", shell=True, stderr=subprocess.STDOUT)
 			subprocess.check_output("cargo add cc --build", shell=True, stderr=subprocess.STDOUT)
 
-
+			# Build and run the tests
 			subprocess.check_output("cargo build", shell=True, stderr=subprocess.STDOUT)
 			subprocess.check_output('cargo test', shell=True, stderr=subprocess.STDOUT)
 		except subprocess.CalledProcessError as e:
