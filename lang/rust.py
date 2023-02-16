@@ -15,18 +15,18 @@ import argparse
 import gen
 import lib
 
-
+# Take a name and return a string containing a function declaration, exemple "name(arg1, arg2, [...]);"
 def route_lambda(name):
 	return lambda args: "%s(%s);" % (name, ", ".join(args))
 
-
+# Take a name, gets rid of "_" and ":" then verifies if the name isn't a reserved word and adds "Rust" if its the case
 def clean_name(name):
 	new_name = str(name).strip().replace("_", "").replace(":", "")
-	if new_name in ["break", "default", "func", "interface", "select", "case", "defer", "go", "map", "struct", "chan", "else", "goto", "package", "switch", "const", "fallthrough", "if", "range", "type", "continue", "for", "import", "return", "var" ]:
+	if new_name in ["as","break","const","continue","crate","else","enum","extern","false","fn","for","if","impl","in","let","loop","match","mod","move","mut","pub","ref","return","self","Self","static","struct","super","trait","true","type","unsafe","use","where","while","async","await","dyn","abstract","become","box","do","final","macro","override","priv","typeof","unsized","virtual","yield","try"]:
 		return new_name + "Rust"
 	return new_name
 
-
+# Take a name and put it in Pascal case
 def clean_name_with_title(name):
 	new_name = ""
 	if "_" in name:
